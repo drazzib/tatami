@@ -16,6 +16,7 @@ import java.util.Collection;
  * REST controller for managing users.
  *
  * @author Julien Dubois
+ * @author Damien Raude-Morvan
  */
 @Controller
 public class UserController {
@@ -99,5 +100,21 @@ public class UserController {
             mock.add(tescolan);
         }
 		return mock;
+    }
+    
+    @RequestMapping(value = "/rest/friends",
+    		method = RequestMethod.GET,
+    		produces = "application/json")
+    @ResponseBody
+    public Collection<User> friends() {
+		return userService.findFriendsForUser();
+    }
+    
+    @RequestMapping(value = "/rest/followers",
+    		method = RequestMethod.GET,
+    		produces = "application/json")
+    @ResponseBody
+    public Collection<User> followers() {
+		return userService.findFollowersForUser();
     }
 }

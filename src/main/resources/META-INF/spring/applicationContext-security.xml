@@ -16,14 +16,14 @@
     <http pattern="/tatami/about" security="none"/>
 
     <http auto-config="true" use-expressions="true">
-        <intercept-url pattern="/**" access="isAuthenticated()" />
+        <intercept-url pattern="/tatami/**" access="isAuthenticated()" />
+        <intercept-url pattern="/rest/**" access="isAuthenticated()" />
         <form-login
                 login-processing-url="/tatami/authentication"
                 login-page="/tatami/login"
-                authentication-failure-url="/tatami/login?error=true"
-                default-target-url="/tatami/"
-                always-use-default-target="true"
-                authentication-success-handler-ref="tatamiAuthenticationSuccessHandler"/>
+                authentication-success-handler-ref="tatamiAuthenticationSuccessHandler"
+                authentication-failure-handler-ref="tatamiAuthenticationFailureHandler"
+                />
         <remember-me user-service-ref="userDetailsService"/>
         <logout logout-url="/tatami/logout"
                 logout-success-url="/tatami/login"/>
@@ -37,5 +37,16 @@
         <user name="jdubois" password="password" authorities="ROLE_USER"/>
         <user name="tescolan" password="password" authorities="ROLE_USER"/>
     </user-service>
+    
+    <beans:bean id="tatamiAuthenticationFailureHandler"
+    			class="fr.ippon.tatami.security.TatamiAuthenticationFailureHandler">
+    		<beans:property name="defaultFailureUrl" value="/tatami/login?error=true" />
+    </beans:bean>
+    
+    <beans:bean id="tatamiAuthenticationSuccessHandler"
+    			class="fr.ippon.tatami.security.TatamiAuthenticationSuccessHandler">
+    		<beans:property name="defaultTargetUrl" value="/tatami/" />
+    		<beans:property name="alwaysUseDefaultTargetUrl" value="true" />
+    </beans:bean>
 
 </beans:beans>

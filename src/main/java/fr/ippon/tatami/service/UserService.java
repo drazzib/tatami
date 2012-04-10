@@ -1,5 +1,10 @@
 package fr.ippon.tatami.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.inject.Inject;
+
 import fr.ippon.tatami.domain.User;
 import fr.ippon.tatami.repository.CounterRepository;
 import fr.ippon.tatami.repository.FollowerRepository;
@@ -18,6 +23,7 @@ import javax.inject.Inject;
  * Manages the application's users.
  *
  * @author Julien Dubois
+ * @author Damien Raude-Morvan
  */
 @Service
 public class UserService {
@@ -126,5 +132,35 @@ public class UserService {
                 .getAuthentication().getPrincipal();
 
         return getUserByLogin(springSecurityUser.getUsername());
+    }
+    
+    public Collection<User> findFollowersForUser() {
+    	Collection<User> followers = new ArrayList<User>();
+    	
+    	User currentUser = getCurrentUser();
+        Collection<String> logins = followerRepository.findFollowersForUser(currentUser.getLogin());
+        if (logins != null && !logins.isEmpty()) {
+        	for (String login: logins) {
+        		User user = getUserByLogin(login);
+        		followers.add(user);
+        	}
+        }
+        
+		return followers;
+    }
+    
+    public Collection<User> findFriendsForUser() {
+    	Collection<User> friends = new ArrayList<User>();
+    	
+    	User currentUser = getCurrentUser();
+        Collection<String> logins = followerRepository.findFollowersForUser(currentUser.getLogin());
+        if (logins != null && !logins.isEmpty()) {
+        	for (String login: logins) {
+        		User user = getUserByLogin(login);
+        		friends.add(user);
+        	}
+        }
+        
+		return friends;
     }
 }
